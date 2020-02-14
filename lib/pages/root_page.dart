@@ -131,23 +131,13 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
             );
 
 
-          return _buildState(snapshot.data);
+          return new HomePage(
+            user: _user,
+            onSignedOut: _onSignedOut,
+          );
 
         }
     );
-  }
-
-  Widget _buildState(document) {
-    if (document['isAgree'] != false) {
-      return new HomePage(
-        user: _user,
-        onSignedOut: _onSignedOut,
-      );
-    } else {
-      return new UserAgreementPage(
-        user: _user,
-      );
-    }
   }
 
   Widget _buildWaitingScreen() {

@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               appBar: AppBar(
                 backgroundColor: Colors.yellow,
                 title: Text(
-                  "Я только учусь",
+                  "User Home Page",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 50.3,
@@ -106,58 +106,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   ),
                 ),
               ),
-                body: Column(
-                  children: <Widget>[
-                    Center(
-                      child: Container(
-                        height: 300,
-                        width: 300,
-                        color: Colors.lightBlueAccent,
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(50.0),
-                              child: Center(
-                                child: Container(
-                                  height: 200,
-                                  width: 200,
-                                  color: Colors.black,
-                                  child: Center(
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      color: Colors.lightGreenAccent,
-                                      child: Center(child: Text("Тяжковатo ИдЁт", style: TextStyle(color: Colors.red, fontSize: 5.0))),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-          ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Container(
-                              height: 200,
-                              width: 100,
-                              color: Colors.grey,
-                              child: Center(
-                                child: Text('Среда', style: TextStyle(color: Colors.red, fontSize: 14.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              backgroundColor: Colors.white,
+              body: Center(
+                child: Text('Admin HomePage'),
+              ),
             );
           }
         }

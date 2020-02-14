@@ -1,22 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class UserAgreementPage extends StatefulWidget {
 
-  final FirebaseUser user;
-  UserAgreementPage({this.user});
+  final SharedPreferences prefs;
+  UserAgreementPage({this.prefs});
+
 
   @override
   _UserAgreementPageState createState() => _UserAgreementPageState(
-    user: this.user,
+    prefs: this.prefs,
   );
 }
 
 class _UserAgreementPageState extends State<UserAgreementPage> {
 
-  final FirebaseUser user;
-  _UserAgreementPageState({this.user});
+  final SharedPreferences prefs;
+  _UserAgreementPageState({this.prefs});
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +54,10 @@ class _UserAgreementPageState extends State<UserAgreementPage> {
                   border: Border.all(),
                 ),
                 child: FlatButton(
-                  child: Text('СОГЛАСЕН/-НА'),
+                  child: Text('СОГЛАСЕН'),
                   onPressed: () {
-                    _updateUserAgreement().then((value) {
-                      Navigator.of(context).pushNamed("/root");
-                    });
+                    prefs.setBool('seen', true);
+                    Navigator.of(context).pushNamed("/root");
                   },
                 ),
               ),
@@ -63,11 +66,5 @@ class _UserAgreementPageState extends State<UserAgreementPage> {
         ),
       ),
     );
-  }
-
-  _updateUserAgreement() async {
-    await Firestore.instance.collection('users').document(user.uid).updateData({
-      'isAgree': true,
-    });
   }
 }
