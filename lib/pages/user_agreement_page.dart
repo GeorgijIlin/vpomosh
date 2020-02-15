@@ -41,7 +41,8 @@ class _UserAgreementPageState extends State<UserAgreementPage> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(top: 16),
         child: ListView(
           children: <Widget>[
             ListTile(
@@ -49,17 +50,36 @@ class _UserAgreementPageState extends State<UserAgreementPage> {
               subtitle: Text('Vpomosh — это мобильное приложение, представляющее собой совокупность содержащихся в информационной системе объектов интеллектуальной собственности Компании и информации (административного и пользовательского контента) (по тексту Условий — «Vpomosh»).'),
             ),
             ListTile(
-              title: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
+              title: Text('2.Что такое Vpomosh'),
+              subtitle: Text('Vpomosh — это мобильное приложение, представляющее собой совокупность содержащихся в информационной системе объектов интеллектуальной собственности Компании и информации (административного и пользовательского контента) (по тексту Условий — «Vpomosh»).'),
+            ),
+            ListTile(
+              title: Text('3.Что такое Vpomosh'),
+              subtitle: Text('Vpomosh — это мобильное приложение, представляющее собой совокупность содержащихся в информационной системе объектов интеллектуальной собственности Компании и информации (административного и пользовательского контента) (по тексту Условий — «Vpomosh»).'),
+            ),
+            ListTile(
+              title: Text('4.Что такое Vpomosh'),
+              subtitle: Text('Vpomosh — это мобильное приложение, представляющее собой совокупность содержащихся в информационной системе объектов интеллектуальной собственности Компании и информации (административного и пользовательского контента) (по тексту Условий — «Vpomosh»).'),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).primaryColor,
                 ),
-                child: FlatButton(
-                  child: Text('СОГЛАСЕН'),
-                  onPressed: () {
-                    prefs.setBool('seen', true);
-                    Navigator.of(context).pushNamed("/root");
-                  },
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
                 ),
+              ),
+              child: FlatButton(
+                child: Text(
+                  'СОГЛАСЕН',
+                  style: TextStyle(color: Theme.of(context).primaryColor,),
+                ),
+                onPressed: () {
+                  prefs.setBool('seen', true);
+                  Navigator.of(context).pushNamed("/root");
+                },
               ),
             ),
           ],
