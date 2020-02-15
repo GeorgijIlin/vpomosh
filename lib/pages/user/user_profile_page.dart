@@ -20,6 +20,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final VoidCallback onSignedOut;
   _UserProfilePageState({this.user, this.onSignedOut});
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +39,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
         backgroundColor: Colors.white,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => _signOut(),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: null,
     );
+  }
+  _signOut() async {
+    try {
+      await _auth.signOut();
+      onSignedOut();
+    } catch (e) {
+      print(e);
+    }
   }
 }
