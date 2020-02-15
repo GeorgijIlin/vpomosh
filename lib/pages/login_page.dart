@@ -27,8 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   FirebaseAuth _fbAuth;
   String _message = "Для входа в приложение введите свой номер телефона с кодом страны (Россия: +7)";
 
-  String _phoneNumber = 'assets/images/phone.svg';
-
   @override
   void initState() {
     super.initState();
@@ -49,6 +47,12 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    new Container(
+                      margin: new EdgeInsets.only(bottom: 50.0),
+                      child: Container(
+                        child: Image.asset('assets/images/auth.png'),
+                      ),
+                    ),
                     new Container(
                       margin: new EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
@@ -238,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
         color: Theme.of(context).primaryColor,
         child: new Text(isOtpSent ? "ВОЙТИ" : "ПОЛУЧИТЬ КОД", style: new TextStyle(fontSize: 16, color: Colors.white),),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
     );
@@ -321,4 +325,5 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
+
 }
