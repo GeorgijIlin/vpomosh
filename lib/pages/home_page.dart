@@ -4,6 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vpomosh/pages/user/user_ads_page.dart';
+import 'package:vpomosh/pages/user/user_messages_page.dart';
+import 'package:vpomosh/pages/user/user_profile_page.dart';
+import 'package:vpomosh/pages/user/user_search_page.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -28,18 +32,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   _HomePageState({this.user, this.onSignedOut});
 
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = new TabController(length: 4, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  PageController pageController;
+  int _page = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -95,24 +89,84 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             );
           } else {
             return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.yellow,
-                title: Text(
-                  "User Home Page",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 50.3,
-                    fontWeight: FontWeight.bold,
+              body: new PageView(
+                children: [
+                  new Container(color: Colors.white, child: UserSearchPage(user: user)),
+                  new Container(color: Colors.white, child: UserAdsPage(user: user)),
+                  new Container(color: Colors.white, child: UserMessagesPage(user: user)),
+                  new Container(color: Colors.white, child: UserProfilePage(user: user, onSignedOut: onSignedOut)),
+                ],
+                controller: pageController,
+                physics: new NeverScrollableScrollPhysics(),
+                onPageChanged: onPageChanged,
+              ),
+              bottomNavigationBar: new Container(
+                height: Theme.of(context).platform == TargetPlatform.iOS ? 85.0 : 64.0,
+                child: new Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: Colors.white,
+                    primaryColor: Colors.redAccent,
+                    textTheme: Theme.of(context).textTheme.copyWith(
+                      caption: new TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  child: PreferredSize(
+                    preferredSize: Size.fromHeight(25.0),
+                    child: new BottomNavigationBar(items: [
+                      BottomNavigationBarItem(
+                        icon: new Icon(Icons.search, size: 25.0, color: (_page == 0) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                        title: Text('Поиск', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,),),
+                        backgroundColor: Colors.white,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: new Icon(Icons.list, size: 25.0, color: (_page == 1) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                        title: Text('Объявления', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                        backgroundColor: Colors.white,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: new Icon(Icons.message, size: 25.0, color: (_page == 2) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                        title: Text('Сообщения', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                        backgroundColor: Colors.white,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.person, size: 25.0, color: (_page == 3) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                        title: Text('Профиль', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                        backgroundColor: Colors.white,
+                      ),
+                    ],
+                      fixedColor: Theme.of(context).primaryColor,
+                      type: BottomNavigationBarType.shifting,
+                      onTap: navigationTapped,
+                      currentIndex: _page,
+                    ),
                   ),
                 ),
               ),
-              backgroundColor: Colors.white,
-              body: Center(
-                child: Text('Admin HomePage'),
-              ),
+
             );
           }
         }
     );
+  }
+  void onPageChanged(int page) {
+    setState(() {
+      this._page = page;
+    });
+  }
+
+  void navigationTapped(int page) {
+    pageController.jumpToPage(page);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = new PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
   }
 }
