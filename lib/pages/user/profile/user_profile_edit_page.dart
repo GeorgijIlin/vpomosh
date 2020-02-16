@@ -74,14 +74,14 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 style: new TextStyle(fontSize: 20),
               ),
               automaticallyImplyLeading: true,
-              centerTitle: true,
+              centerTitle: false,
               iconTheme: IconThemeData(
-                color: Colors.black,
+                color: Theme.of(context).primaryColor,
               ),
 
               textTheme: TextTheme(
                   title: TextStyle(
-                    color: Colors.black,
+                    color: Theme.of(context).primaryColor,
                     fontSize: 22,
                   )
               ),

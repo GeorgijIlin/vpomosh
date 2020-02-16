@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vpomosh/pages/user/profile/user_notifications.page.dart';
 import 'package:vpomosh/pages/user/profile/user_profile_edit_page.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -57,32 +58,42 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: new Text('Профиль'),
+            title: new Text('ПРОФИЛЬ'),
             automaticallyImplyLeading: false,
             centerTitle: false,
             iconTheme: IconThemeData(
-              color: Colors.black,
+              color: Theme.of(context).primaryColor,
             ),
             textTheme: TextTheme(
               title: TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).primaryColor,
                 fontSize: 20.0,
               ),
             ),
             backgroundColor: Colors.white,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.exit_to_app),
+                icon: Icon(Icons.exit_to_app,
+                  color: Theme.of(context).primaryColor,
+                ),
                 onPressed: () => _signOut(),
               ),
             ],
           ),
           backgroundColor: Colors.white,
-          body: Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: ListView(
-              children: <Widget>[
-                ListTile(
+          body: ListView(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration( //                    <-- BoxDecoration
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey.withOpacity(0.1),
+                      width: 3,
+                    ),
+                  ),
+                  color: Colors.white,
+                ),
+                child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: document['userImage'] != null
@@ -131,8 +142,36 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     );
                   },
                 ),
-              ],
-            ),
+              ),
+              Container(
+                decoration: BoxDecoration( //                    <-- BoxDecoration
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey.withOpacity(0.1),
+                      width: 3,
+                    ),
+                  ),
+                  color: Colors.white,
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.notifications,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  title: Text('Уведомления',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserNotificationsPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
