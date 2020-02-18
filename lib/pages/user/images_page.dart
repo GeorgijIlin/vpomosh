@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+
 
 class ImagesPage extends StatefulWidget {
 
@@ -32,22 +35,21 @@ class _ImagesPageState extends State<ImagesPage> {
   _ImagesPageState({this.user, this.category, this.service, this.price, this.address});
 
   List<Asset> images = List<Asset>();
-  String _error = 'No Error Dectected';
+  File adFile;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Widget buildGridView() {
     return GridView.count(
       crossAxisCount: 3,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
-        return AssetThumb(
-          asset: asset,
-          width: 300,
-          height: 300,
+        return Padding(
+          padding: EdgeInsets.all(3.0),
+          child: AssetThumb(
+            asset: asset,
+            width: 300,
+            height: 300,
+          ),
         );
       }),
     );
@@ -75,14 +77,10 @@ class _ImagesPageState extends State<ImagesPage> {
       error = e.toString();
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
       images = resultList;
-      _error = error;
     });
   }
 
@@ -90,7 +88,7 @@ class _ImagesPageState extends State<ImagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Загрузите фото'),
+        title: Text('Загрузите фотографии'),
         automaticallyImplyLeading: true,
         centerTitle: false,
         iconTheme: IconThemeData(
@@ -107,15 +105,37 @@ class _ImagesPageState extends State<ImagesPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[
-          Center(child: Text('Error: $_error')),
-          RaisedButton(
-            child: Text("Pick images"),
-            onPressed: loadAssets,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Container(
+              child: FlatButton(
+                child: Text("Выбрать изображения"),
+                onPressed: loadAssets,
+              ),
+            ),
           ),
           Expanded(
             child: buildGridView(),
           )
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        margin: EdgeInsets.symmetric(vertical: 40),
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width - 50,
+          height: 50,
+          child: RaisedButton(
+            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0)),
+            elevation: 0.0,
+            color: images.length != 0
+                ? Theme.of(context).primaryColor
+                : Colors.grey[400],
+            child: new Text('Разместить', style: TextStyle(fontSize: 18, color: Colors.white)),
+            onPressed: () async {
+            },
+          ),
+        ),
       ),
     );
   }
