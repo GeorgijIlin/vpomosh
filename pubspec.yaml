@@ -35,6 +35,7 @@ dependencies:
   app_settings: ^3.0.0+1
   multi_image_picker: ^4.6.1
   mock_data: ^1.2.5
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:
