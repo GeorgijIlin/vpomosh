@@ -21,13 +21,13 @@ class _UserAdsPageState extends State<UserAdsPage> {
       appBar: AppBar(
         title: new Text('Объявления'),
         automaticallyImplyLeading: false,
-        centerTitle: false,
+        centerTitle: true,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Theme.of(context).primaryColor,
         ),
         textTheme: TextTheme(
           title: TextStyle(
-            color: Colors.black,
+            color: Theme.of(context).primaryColor,
             fontSize: 20.0,
           ),
         ),

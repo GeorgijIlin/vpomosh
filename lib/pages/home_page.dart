@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vpomosh/pages/user/user_ads_page.dart';
+import 'package:vpomosh/pages/user/user_new_ad_page.dart';
 import 'package:vpomosh/pages/user/user_messages_page.dart';
 import 'package:vpomosh/pages/user/user_profile_page.dart';
 import 'package:vpomosh/pages/user/user_search_page.dart';
@@ -93,6 +94,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 children: [
                   new Container(color: Colors.white, child: UserSearchPage(user: user)),
                   new Container(color: Colors.white, child: UserAdsPage(user: user)),
+                  new Container(color: Colors.white, child: UserNewAdPage(user: user)),
                   new Container(color: Colors.white, child: UserMessagesPage(user: user)),
                   new Container(color: Colors.white, child: UserProfilePage(user: user, onSignedOut: onSignedOut)),
                 ],
@@ -101,7 +103,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 onPageChanged: onPageChanged,
               ),
               bottomNavigationBar: new Container(
-                height: Theme.of(context).platform == TargetPlatform.iOS ? 85.0 : 64.0,
+                height: Theme.of(context).platform == TargetPlatform.iOS ? 100.0 : 64.0,
                 child: new Theme(
                   data: Theme.of(context).copyWith(
                     canvasColor: Colors.white,
@@ -110,39 +112,40 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       caption: new TextStyle(color: Colors.black),
                     ),
                   ),
-                  child: PreferredSize(
-                    preferredSize: Size.fromHeight(25.0),
-                    child: new BottomNavigationBar(items: [
-                      BottomNavigationBarItem(
-                        icon: new Icon(Icons.search, size: 25.0, color: (_page == 0) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                        title: Text('Поиск', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,),),
-                        backgroundColor: Colors.white,
-                      ),
-                      BottomNavigationBarItem(
-                        icon: new Icon(Icons.list, size: 25.0, color: (_page == 1) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                        title: Text('Объявления', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
-                        backgroundColor: Colors.white,
-                      ),
-                      BottomNavigationBarItem(
-                        icon: new Icon(Icons.message, size: 25.0, color: (_page == 2) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                        title: Text('Сообщения', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
-                        backgroundColor: Colors.white,
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.person, size: 25.0, color: (_page == 3) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                        title: Text('Профиль', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
-                        backgroundColor: Colors.white,
-                      ),
-                    ],
-                      fixedColor: Theme.of(context).primaryColor,
-                      type: BottomNavigationBarType.shifting,
-                      onTap: navigationTapped,
-                      currentIndex: _page,
+                  child: BottomNavigationBar(items: [
+                    BottomNavigationBarItem(
+                      icon: new Icon(Icons.search, size: 25.0, color: (_page == 0) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text('Поиск', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,),),
+                      backgroundColor: Colors.white,
                     ),
+                    BottomNavigationBarItem(
+                      icon: new Icon(Icons.list, size: 25.0, color: (_page == 1) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text('Объявления', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                      backgroundColor: Colors.white,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: new Icon(Icons.add_circle, size: 40.0, color: (_page == 2) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text('Разместить', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                      backgroundColor: Colors.white,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: new Icon(Icons.message, size: 25.0, color: (_page == 3) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text('Сообщения', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                      backgroundColor: Colors.white,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person, size: 25.0, color: (_page == 4) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text('Профиль', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                      backgroundColor: Colors.white,
+                    ),
+                  ],
+                    fixedColor: Theme.of(context).primaryColor,
+                    type: BottomNavigationBarType.shifting,
+                    onTap: navigationTapped,
+                    currentIndex: _page,
                   ),
                 ),
               ),
-
             );
           }
         }

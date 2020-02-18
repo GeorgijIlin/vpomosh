@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vpomosh/pages/user/profile/user_notifications.page.dart';
-import 'package:vpomosh/pages/user/profile/user_profile_edit_page.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+import 'package:vpomosh/pages/user/get_user_city.dart';
 
 class UserProfilePage extends StatefulWidget {
 
@@ -26,6 +32,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
   _UserProfilePageState({this.user, this.onSignedOut});
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  SharedPreferences prefs;
+  String userImage = '';
+  bool isLoading = false;
+  File userFile;
+  List cities = [];
+
+  TextEditingController _userNameController = new TextEditingController();
+  TextEditingController _userCityController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +71,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         final document = snapshot.data;
 
+        _userNameController.text = document['userName'];
+        _userCityController.text = document['userCity'];
+
         return Scaffold(
           appBar: AppBar(
             title: new Text('ПРОФИЛЬ'),
@@ -81,95 +99,118 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ],
           ),
           backgroundColor: Colors.white,
-          body: ListView(
+          body: new ListView(
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration( //                    <-- BoxDecoration
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey.withOpacity(0.1),
-                      width: 3,
-                    ),
-                  ),
-                  color: Colors.white,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: document['userImage'] != null
-                        ? new CachedNetworkImage(
-                      imageUrl: document['userImage'],
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: 150,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                            colorFilter: new ColorFilter.mode(Colors.white, BlendMode.colorBurn),
+              new Container(
+                height: MediaQuery.of(context).size.height / 4,
+                child: new Align(
+                  alignment: Alignment.center,
+                  child: new Stack(
+                    children: <Widget>[
+                      Container(
+                        child: document['userImage'] != null
+                            ? new CachedNetworkImage(
+                          imageUrl: document['userImage'],
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                                colorFilter: new ColorFilter.mode(Colors.white, BlendMode.colorBurn),
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS
+                              ? new CupertinoActivityIndicator()
+                              : new CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => new Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(child: new Text('[Нет фото]')),
+                          ),
+                        )
+                            : CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 45,
+                          child: Image.asset("assets/images/def.png"),
+                        ),
+                      ),
+                      new Positioned(
+                        top: 0.0,
+                        right: 0.0,
+                        child: new Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 3),
+                            borderRadius: BorderRadius.all(Radius.circular(40)),
+                          ),
+                          child: new ClipOval(
+                            child: Material(
+                              color: Theme.of(context).primaryColor, // button color
+                              child: InkWell(
+                                splashColor: Colors.black, // inkwell color
+                                child: SizedBox(width: 35, height: 35, child: Icon(Icons.edit, size: 20, color: Colors.white,)),
+                                onTap: () => _getUserImage(),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS
-                          ? new CupertinoActivityIndicator()
-                          : new CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => new Container(
-                        width: 150,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(child: new Text('[Нет фото]')),
-                      ),
-                    )
-                        : new Image.asset("assets/images/def.png"),
+                    ],
                   ),
-                  title: Text('${document['userName']}',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  subtitle: Text('Редактирование профиля'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserProfileEditPage(user: user),
-                      ),
-                    );
-                  },
                 ),
               ),
-              Container(
-                decoration: BoxDecoration( //                    <-- BoxDecoration
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey.withOpacity(0.1),
-                      width: 3,
+              new ListTile(
+                leading: new Icon(Icons.person, color: Theme.of(context).primaryColor,),
+                title: new TextFormField(
+                  cursorColor: Theme.of(context).primaryColor,
+                  textInputAction: TextInputAction.go,
+                  decoration: new InputDecoration(
+                    labelText: 'Имя',
+                    suffixIcon: new IconButton(
+                      icon: new Icon(Icons.check),
+                      onPressed: () async {
+                        SystemChannels.textInput.invokeMethod('TextInput.hide');
+                        await Firestore.instance
+                            .collection('users')
+                            .document(user.uid)
+                            .updateData({
+                          "userName": _userNameController.text,
+                        });
+                      },
                     ),
                   ),
-                  color: Colors.white,
+                  controller: _userNameController,
                 ),
-                child: ListTile(
-                  leading: Icon(Icons.notifications,
-                    color: Theme.of(context).primaryColor,
+              ),
+              new ListTile(
+                leading: new Icon(Icons.location_on, color: Theme.of(context).primaryColor),
+                title: new IgnorePointer(
+                  child: new TextFormField(
+                    decoration: new InputDecoration(
+                      labelText: 'Город',
+//                        hintText: 'Выберите город',
+                    ),
+                    controller: _userCityController,
                   ),
-                  title: Text('Уведомления',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserNotificationsPage(),
-                      ),
-                    );
-                  },
                 ),
+                onTap:() async {
+                  cities = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GetUserCity(user: user),
+                    ),
+                  );
+                  _userCityController.text = cities[0]['name'];
+                },
               ),
             ],
           ),
@@ -177,6 +218,43 @@ class _UserProfilePageState extends State<UserProfilePage> {
       },
     );
   }
+  Future _getUserImage() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        userFile = image;
+        _uploadUserFile(userFile);
+      });
+    }
+  }
+
+  Future _uploadUserFile(File file) async {
+    var uuid = new Uuid().v1();
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child('user_images')
+        .child("user_image_$uuid.jpg");
+    StorageUploadTask uploadTask = ref.putFile(file);
+    StorageTaskSnapshot storageTaskSnapshot;
+    uploadTask.onComplete.then((value) {
+      if (value.error == null) {
+        storageTaskSnapshot = value;
+        storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+          userImage = downloadUrl;
+          Firestore.instance
+              .collection('users')
+              .document(user.uid)
+              .updateData({
+            'userImage': userImage,
+          }).then((data) async {
+            await prefs.setString('userImage', userImage);
+          });
+        });
+      } else {
+      }
+    });
+  }
+
   _signOut() async {
     try {
       await _auth.signOut();

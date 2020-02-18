@@ -21,13 +21,13 @@ class _UserMessagesPageState extends State<UserMessagesPage> {
       appBar: AppBar(
         title: new Text('Сообщения'),
         automaticallyImplyLeading: false,
-        centerTitle: false,
+        centerTitle: true,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Theme.of(context).primaryColor,
         ),
         textTheme: TextTheme(
           title: TextStyle(
-            color: Colors.black,
+            color: Theme.of(context).primaryColor,
             fontSize: 20.0,
           ),
         ),

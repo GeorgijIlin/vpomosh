@@ -21,13 +21,13 @@ class _UserSearchPageState extends State<UserSearchPage> {
       appBar: AppBar(
         title: new Text('Поиск'),
         automaticallyImplyLeading: false,
-        centerTitle: false,
+        centerTitle: true,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Theme.of(context).primaryColor,
         ),
         textTheme: TextTheme(
           title: TextStyle(
-            color: Colors.black,
+            color: Theme.of(context).primaryColor,
             fontSize: 20.0,
           ),
         ),
