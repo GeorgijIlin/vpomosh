@@ -92,8 +92,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             return Scaffold(
               body: new PageView(
                 children: [
-                  new Container(color: Colors.white, child: UserSearchPage(user: user)),
-                  new Container(color: Colors.white, child: UserAdsPage(user: user)),
+                  Container(color: Colors.white, child: document['userView'] == 1 ? UserAdsPage(user: user) : UserSearchPage(user: user)),
+                  new Container(color: Colors.white, child: document['userView'] == 1 ? UserSearchPage(user: user) : UserAdsPage(user: user)),
                   new Container(color: Colors.white, child: UserNewAdPage(user: user)),
                   new Container(color: Colors.white, child: UserMessagesPage(user: user)),
                   new Container(color: Colors.white, child: UserProfilePage(user: user, onSignedOut: onSignedOut)),
@@ -114,13 +114,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   ),
                   child: BottomNavigationBar(items: [
                     BottomNavigationBarItem(
-                      icon: new Icon(Icons.search, size: 25.0, color: (_page == 0) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                      title: Text('Поиск', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,),),
+                      icon: new Icon(document['userView'] == 1 ? Icons.list : Icons.search, size: 25.0, color: (_page == 0) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text(document['userView'] == 1 ? 'Объявления' : 'Поиск', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,),),
                       backgroundColor: Colors.white,
                     ),
                     BottomNavigationBarItem(
-                      icon: new Icon(Icons.list, size: 25.0, color: (_page == 1) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
-                      title: Text('Объявления', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
+                      icon: new Icon(document['userView'] == 1 ? Icons.search : Icons.list, size: 25.0, color: (_page == 1) ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5)),
+                      title: Text(document['userView'] == 1 ? 'Поиск' : 'Объявления', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 14.0,)),
                       backgroundColor: Colors.white,
                     ),
                     BottomNavigationBarItem(

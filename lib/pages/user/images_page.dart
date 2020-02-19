@@ -1,9 +1,11 @@
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 
 class ImagesPage extends StatefulWidget {
@@ -35,8 +37,9 @@ class _ImagesPageState extends State<ImagesPage> {
   _ImagesPageState({this.user, this.category, this.service, this.price, this.address});
 
   List<Asset> images = List<Asset>();
-  File adFile;
-
+  bool _isLoading = false;
+  bool _isDesabled = false;
+  int _count = 0;
 
   Widget buildGridView() {
     return GridView.count(
@@ -61,7 +64,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 8,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -105,12 +108,16 @@ class _ImagesPageState extends State<ImagesPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[
+          _isLoading == true ? LinearProgressIndicator() : Container(height: 0.0),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Container(
               child: FlatButton(
-                child: Text("Выбрать изображения"),
-                onPressed: loadAssets,
+                child: Text(
+                  "Выбрать изображения",
+                  style: TextStyle(color: _isDesabled != true ? Colors.black : Colors.grey),
+                ),
+                onPressed: _isDesabled != true ? loadAssets : () {},
               ),
             ),
           ),
@@ -129,15 +136,93 @@ class _ImagesPageState extends State<ImagesPage> {
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0)),
             elevation: 0.0,
             color: images.length != 0
-                ? Theme.of(context).primaryColor
-                : Colors.grey[400],
-            child: new Text('Разместить', style: TextStyle(fontSize: 18, color: Colors.white)),
-            onPressed: () async {
+                ? _isDesabled != true ? Theme.of(context).primaryColor
+                : Colors.grey[400] : Colors.grey[400],
+            child: new Text(
+              'Разместить',
+              style: TextStyle(fontSize: 18, color: _isDesabled != true ? Colors.white : Colors.white),
+            ),
+            onPressed: () {
+              if (_isDesabled != true) {
+                setState(() {
+                  _isDesabled = true;
+                  _isLoading = true;
+                });
+                images.forEach((asset) async {
+                  _count = _count + 1;
+                  print('_count: $_count');
+                  var uuid = new Uuid().v1();
+                  ByteData byteData = await asset.getByteData();
+                  List<int> imageData = byteData.buffer.asUint8List();
+                  StorageReference ref = FirebaseStorage.instance
+                      .ref()
+                      .child('ads')
+                      .child('${user.uid}')
+                      .child("$uuid.png");
+                  StorageUploadTask uploadTask = ref.putData(imageData);
+                  StorageTaskSnapshot storageTaskSnapshot;
+                  uploadTask.onComplete.then((value) {
+                    if (value.error == null) {
+                      storageTaskSnapshot = value;
+                      storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+
+                        if (_count == images.length) {
+                          setState(() {
+                            _updateUserView();
+                            Navigator.pushNamed(context, '/root');
+                          });
+                        }
+
+                      });
+                    } else {
+
+                    }
+                  });
+                });
+              } else {
+
+              }
             },
           ),
         ),
       ),
     );
   }
+
+  uploadFile() {
+    images.forEach((asset) async {
+      var uuid = new Uuid().v1();
+      ByteData byteData = await asset.getByteData();
+      List<int> imageData = byteData.buffer.asUint8List();
+      StorageReference ref = FirebaseStorage.instance
+          .ref()
+          .child('ads')
+          .child('${user.uid}')
+          .child("$uuid.png");
+      StorageUploadTask uploadTask = ref.putData(imageData);
+      StorageTaskSnapshot storageTaskSnapshot;
+      uploadTask.onComplete.then((value) {
+        if (value.error == null) {
+          storageTaskSnapshot = value;
+          storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+
+          });
+        } else {
+
+        }
+      });
+    });
+  }
+
+  void _updateUserView() async {
+    await Firestore.instance.collection('users').document(user.uid).updateData({
+      'userView': 1,
+    });
+  }
+
 }
 

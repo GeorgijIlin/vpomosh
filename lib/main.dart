@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vpomosh/pages/login_page.dart';
 import 'package:vpomosh/pages/root_page.dart';
+import 'package:vpomosh/pages/user/user_ads_page.dart';
 
 import 'pages/user_agreement_page.dart';
 
