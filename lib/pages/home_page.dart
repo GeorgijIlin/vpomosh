@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 children: [
                   Container(color: Colors.white, child: document['userView'] == 1 ? UserAdsPage(user: user) : UserSearchPage(user: user)),
                   new Container(color: Colors.white, child: document['userView'] == 1 ? UserSearchPage(user: user) : UserAdsPage(user: user)),
-                  new Container(color: Colors.white, child: UserNewAdPage(user: user)),
+                  new Container(color: Colors.white, child: UserNewAdPage(user: user, owner: document)),
                   new Container(color: Colors.white, child: UserMessagesPage(user: user)),
                   new Container(color: Colors.white, child: UserProfilePage(user: user, onSignedOut: onSignedOut)),
                 ],

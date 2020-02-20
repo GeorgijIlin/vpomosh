@@ -8,13 +8,15 @@ class ServicePage extends StatefulWidget {
 
   final FirebaseUser user;
   final DocumentSnapshot category;
+  final DocumentSnapshot owner;
 
-  ServicePage({this.user, this.category});
+  ServicePage({this.user, this.category, this.owner});
 
   @override
   _ServicePageState createState() => _ServicePageState(
     user: this.user,
     category: this.category,
+    owner: this.owner,
   );
 }
 
@@ -22,8 +24,9 @@ class _ServicePageState extends State<ServicePage> {
 
   final FirebaseUser user;
   final DocumentSnapshot category;
+  final DocumentSnapshot owner;
 
-  _ServicePageState({this.user, this.category});
+  _ServicePageState({this.user, this.category, this.owner});
 
   String searchString;
   final TextEditingController _serviceController = new TextEditingController();
@@ -153,6 +156,7 @@ class _ServicePageState extends State<ServicePage> {
               user: user,
               service: document,
               category: category,
+              owner: owner,
             ),
           ),
         );

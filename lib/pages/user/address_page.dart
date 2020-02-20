@@ -1,17 +1,15 @@
-import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:vpomosh/pages/user/search_address_page.dart';
 
 class AddressPage extends StatefulWidget {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
   final String price;
 
-  AddressPage({this.user, this.category, this.service, this.price});
+  AddressPage({this.user, this.category, this.service, this.price, this.owner});
 
   @override
   _AddressPageState createState() => _AddressPageState(
@@ -19,16 +17,17 @@ class AddressPage extends StatefulWidget {
     category: this.category,
     service: this.service,
     price: this.price,
+    owner: this.owner,
   );
 }
 
 class _AddressPageState extends State<AddressPage> {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
   final String price;
 
-  _AddressPageState({this.user, this.category, this.service, this.price});
+  _AddressPageState({this.user, this.category, this.service, this.price, this.owner});
 
 
   @override
@@ -55,6 +54,7 @@ class _AddressPageState extends State<AddressPage> {
         service: service,
         category: category,
         price: price,
+        owner: owner,
       ),
     );
   }

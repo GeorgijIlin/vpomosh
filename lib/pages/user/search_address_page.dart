@@ -2,16 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:vpomosh/pages/user/images_page.dart';
 
 class SearchAddressPage extends StatefulWidget {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
   final String price;
 
-  SearchAddressPage({this.user, this.category, this.service, this.price});
+  SearchAddressPage({this.user, this.category, this.service, this.price, this.owner});
 
   @override
   _SearchAddressPageState createState() => _SearchAddressPageState(
@@ -19,16 +18,17 @@ class SearchAddressPage extends StatefulWidget {
     category: this.category,
     service: this.service,
     price: this.price,
+    owner: this.owner,
   );
 }
 
 class _SearchAddressPageState extends State<SearchAddressPage> {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
   final String price;
 
-  _SearchAddressPageState({this.user, this.category, this.service, this.price});
+  _SearchAddressPageState({this.user, this.category, this.service, this.price, this.owner});
 
   final TextEditingController _addressController = new TextEditingController();
   bool disableButton = false;
@@ -107,6 +107,7 @@ class _SearchAddressPageState extends State<SearchAddressPage> {
                         category: category,
                         price: price,
                         address: _addressController.text,
+                        owner: owner,
                       ),
                     ),
                   );

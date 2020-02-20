@@ -7,24 +7,25 @@ import 'package:vpomosh/pages/user/address_page.dart';
 class PricePage extends StatefulWidget {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
 
-  PricePage({this.user, this.category, this.service});
+  PricePage({this.user, this.category, this.service, this.owner});
 
   @override
   _PricePageState createState() => _PricePageState(
     user: this.user,
     category: this.category,
     service: this.service,
+    owner: this.owner,
   );
 }
 
 class _PricePageState extends State<PricePage> {
 
   final FirebaseUser user;
-  final DocumentSnapshot category, service;
+  final DocumentSnapshot category, service, owner;
 
-  _PricePageState({this.user, this.category, this.service});
+  _PricePageState({this.user, this.category, this.service, this.owner});
 
   final TextEditingController _priceController = new TextEditingController();
   bool disableButton = false;
@@ -114,6 +115,7 @@ class _PricePageState extends State<PricePage> {
                         service: service,
                         category: category,
                         price: _priceController.text,
+                        owner: owner,
                       ),
                     ),
                   );

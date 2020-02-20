@@ -7,16 +7,21 @@ import 'package:vpomosh/pages/user/service_page.dart';
 class UserNewAdPage extends StatefulWidget {
 
   final FirebaseUser user;
-  UserNewAdPage({this.user});
+  final DocumentSnapshot owner;
+  UserNewAdPage({this.user, this.owner});
 
   @override
-  _UserNewAdPageState createState() => _UserNewAdPageState(user: this.user);
+  _UserNewAdPageState createState() => _UserNewAdPageState(
+    user: this.user,
+    owner: this.owner,
+  );
 }
 
 class _UserNewAdPageState extends State<UserNewAdPage> {
 
   final FirebaseUser user;
-  _UserNewAdPageState({this.user});
+  final DocumentSnapshot owner;
+  _UserNewAdPageState({this.user, this.owner});
 
   String searchString;
   final TextEditingController _categoryController = new TextEditingController();
@@ -140,6 +145,7 @@ class _UserNewAdPageState extends State<UserNewAdPage> {
             builder: (context) => ServicePage(
               user: user,
               category: document,
+              owner: owner,
             ),
           ),
         );
