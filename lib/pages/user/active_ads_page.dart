@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ActiveAdsPage extends StatefulWidget {
 
@@ -92,19 +93,46 @@ class _ActiveAdsPageState extends State<ActiveAdsPage> {
   Widget _buildItem(BuildContext context, ad) {
     return Column(
       children: <Widget>[
-        ListTile(
-          leading: CachedNetworkImage(
-            imageUrl: '${ad['images'][0]}',
-            imageBuilder: (context, imageProvider) => CircleAvatar(
-              backgroundImage: imageProvider,
+        Column(
+          children: <Widget>[
+            ListTile(
+              leading: CachedNetworkImage(
+                imageUrl: '${ad['images'][0]}',
+                imageBuilder: (context, imageProvider) => CircleAvatar(
+                  backgroundImage: imageProvider,
+                ),
+                placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS
+                    ? new CupertinoActivityIndicator()
+                    : new CircularProgressIndicator(),
+              ),
+              title: Text('${ad['adServiceName']}'),
+              subtitle: Text('${ad['adCategoryName']}'),
+              trailing: Text('${ad['price']} ₽'),
             ),
-            placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS
-                ? new CupertinoActivityIndicator()
-                : new CircularProgressIndicator(),
-          ),
-          title: Text('${ad['adServiceName']}'),
-          subtitle: Text('${ad['adCategoryName']}'),
-          trailing: Text('${ad['price']} ₽'),
+            Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    DateFormat('dd MMM kk:mm','ru').format(DateTime.fromMillisecondsSinceEpoch(int.parse(ad['timestamp']))),
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  FlatButton(
+                    child: Text(
+                      'Подробнее',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         Divider(),
       ],

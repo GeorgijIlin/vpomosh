@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vpomosh/pages/user/active_ads_page.dart';
 import 'package:vpomosh/pages/user/history_ads_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class UserAdsPage extends StatefulWidget {
 
@@ -25,6 +26,7 @@ class _UserAdsPageState extends State<UserAdsPage> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabController = new TabController(length: 2, vsync: this);
+    initializeDateFormatting('ru', null);
   }
 
   @override
