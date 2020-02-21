@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vpomosh/pages/user/active_ad_detail_page.dart';
 
 class ActiveAdsPage extends StatefulWidget {
 
@@ -127,7 +128,17 @@ class _ActiveAdsPageState extends State<ActiveAdsPage> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ActiveAdDetailPage(
+                            user: user,
+                            ad: ad,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

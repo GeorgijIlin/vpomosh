@@ -37,7 +37,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: new Text('Чат'),
+        title: new Text('$peerName'),
         automaticallyImplyLeading: true,
         centerTitle: false,
         iconTheme: IconThemeData(
