@@ -29,7 +29,7 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
 
   FirebaseUser _user;
 
-  final newUser = new User(null, null, null, null, null, null, null, null, null, null);
+  final newUser = new User(null, null, null, null, null, null, null, null, null, null, null);
 
   SharedPreferences prefs;
 

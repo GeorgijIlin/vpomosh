@@ -9,7 +9,7 @@ class User {
   int userType;
   String userCity;
   bool isAgree;
-
+  int userView;
 
   User(
       this.userId,
@@ -21,7 +21,8 @@ class User {
       this.searchIndex,
       this.userType,
       this.userCity,
-      this.isAgree
+      this.isAgree,
+      this.userView,
   );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +35,7 @@ class User {
     'searchIndex': searchIndex,
     'userType': userType,
     'userCity': userCity,
-    'isAgree': isAgree
+    'isAgree': isAgree,
+    'userView': userView,
   };
 }
