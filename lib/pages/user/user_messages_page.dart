@@ -39,117 +39,112 @@ class _UserMessagesPageState extends State<UserMessagesPage> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: Stack(
-        children: <Widget>[
-          Container(
-            child: new StreamBuilder(
-              stream: Firestore.instance
-                  .collection("users")
-                  .document(user.uid)
-                  .collection("messages")
-                  .snapshots(),
-              builder: (context, snapshot) {
+      body: StreamBuilder(
+        stream: Firestore.instance
+            .collection("users")
+            .document(user.uid)
+            .collection('chats')
+            .snapshots(),
+        builder: (context, snapshot) {
 
-                if (!snapshot.hasData)
-                  return new Container(
-                    alignment: FractionalOffset.center,
-                    child: Center(
-                        child: Theme.of(context).platform == TargetPlatform.iOS
-                            ? new CupertinoActivityIndicator()
-                            : new CircularProgressIndicator()
-                    ),
-                  );
-
-                if (snapshot.data.documents.length == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: Image.asset('assets/images/empty.png'),
-                        ),
-                        ListTile(
-                          title: new Text(
-                            'Нет сообщений',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 18.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) => buildItem(
-                      context: context,
-                      document: snapshot.data.documents[index],
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-          Positioned(
-            child: isLoading
-                ? Container(
-              child: Center(
+          if (snapshot.data != null)
+            if (snapshot.hasError)
+              return new Container(
+                color: Colors.white,
+                alignment: FractionalOffset.center,
+                child: new Center(
+                  child: new Text('Ошибка: ${snapshot.error}'),
+                ),
+              );
+          if (!snapshot.hasData)
+            return new Container(
+              color: Colors.white,
+              alignment: FractionalOffset.center,
+              child: new Center(
                 child: Theme.of(context).platform == TargetPlatform.iOS
                     ? new CupertinoActivityIndicator()
                     : new CircularProgressIndicator(),
               ),
-              color: Colors.white.withOpacity(0.8),
-            )
-                : Container(),
-          )
-        ],
+            );
+
+          final chats = snapshot.data.documents;
+
+          if (chats.length == 0) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: Image.asset('assets/images/empty.png'),
+                ),
+                ListTile(
+                  title: new Text(
+                    'Нет чатов',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Padding(
+              padding: EdgeInsets.only(top: 16.0),
+              child: ListView.builder(
+                itemCount: chats.length,
+                itemBuilder: (context, index) => buildChatItem(
+                  context: context,
+                  document: chats[index],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
 
-  Widget buildItem({BuildContext context, document}) {
+  Widget buildChatItem({BuildContext context, document}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Card(
-          child: ListTile(
-            leading: new Container(
-              child: new CircleAvatar(
-                child: document['userName'] != null
-                    ? new Text('${document['userName'][0]}')
-                    : new Text('${document['userName']}'),
+        ListTile(
+          leading: Container(
+            height: 45,
+            width: 45,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
+              shape: BoxShape.circle,
             ),
-            title: document['userName'] != null
-                ? new Text(
-              '${document['userName']}',
-              style: TextStyle(color: Colors.black),
-            )
-                : new Text(
-              'Имя',
-              style: TextStyle(color: Colors.black),
-            ) ,
-            trailing: new Icon(Icons.chevron_right, color: Colors.black,),
-
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatRoomPage(
-                    peerId: document['userId'],
-                    currentId: widget.user.uid,
-                    peerName: document['userName']!= null
-                        ? document['userName']
-                        : 'Имя',
-                  ),
-                ),
-              );
-            },
+            child: Center(
+              child: Text('${document['userName'][0]}'),
+            ),
           ),
+          title: Text(
+            '${document['userName']}',
+            style: TextStyle(color: Colors.black),
+          ),
+          trailing: new Icon(Icons.chevron_right, color: Colors.black,),
+
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ChatRoomPage(
+                      peerId: document['userId'],
+                      currentId: user.uid,
+                      peerName: document['userName'],
+                      user: user,
+                    ),
+              ),
+            );
+          },
         ),
       ],
     );

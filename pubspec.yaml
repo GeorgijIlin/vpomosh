@@ -35,7 +35,10 @@ dependencies:
   app_settings: ^3.0.0+1
   multi_image_picker: ^4.6.1
   mock_data: ^1.2.5
-  intl: ^0.16.1
+  cupertino_localizations: ^1.0.0+1
+
+dependency_overrides:
+  intl: ^0.16.0
 
 dev_dependencies:
   flutter_test:

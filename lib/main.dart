@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vpomosh/pages/login_page.dart';
 import 'package:vpomosh/pages/root_page.dart';
-import 'package:vpomosh/pages/user/user_ads_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'pages/user_agreement_page.dart';
 
@@ -42,6 +42,14 @@ class _MyAppState extends State<MyApp> {
           secondary: Color(0xFF707070),
         ),
       ),
+
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('ru'),
+      ],
 
 
       home: _handleCurrentScreen(),

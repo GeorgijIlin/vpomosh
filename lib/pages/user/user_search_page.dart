@@ -166,6 +166,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                               peerId: ad['ownerId'],
                               currentId: user.uid,
                               peerName: ad['ownerName'],
+                              user: user,
                             ),
                           ),
                         );
