@@ -15,47 +15,48 @@ class ChatRoomPage extends StatefulWidget {
   final String currentId;
   final String peerName;
 
-  ChatRoomPage({
-    this.peerId,
-    this.currentId,
-    this.peerName,
-  });
+  ChatRoomPage({this.peerId, this.currentId, this.peerName});
 
   @override
-  _ChatRoomPageState createState() => _ChatRoomPageState();
+  _ChatRoomPageState createState() => _ChatRoomPageState(
+    peerId: this.peerId,
+    currentId: this.currentId,
+    peerName: this.peerName,
+  );
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
+
+  final String peerId;
+  final String currentId;
+  final String peerName;
+
+  _ChatRoomPageState({this.peerId, this.currentId, this.peerName});
 
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        leading: new IconButton(
-          icon: Theme.of(context).platform == TargetPlatform.iOS
-              ? new Icon(Icons.arrow_back_ios)
-              : new Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text('${widget.peerName}'),
+        title: Text('$peerName'),
+        automaticallyImplyLeading: true,
+        centerTitle: false,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Theme.of(context).primaryColor,
         ),
-
         textTheme: TextTheme(
-            title: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-            )
+          title: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 20.0,
+          ),
         ),
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
       body: new ChatScreen(
-        peerId: widget.peerId,
-        currentId: widget.currentId,
-        peerName: widget.peerName,
+        peerId: peerId,
+        currentId: currentId,
+        peerName: peerName,
       ),
     );
   }
@@ -112,7 +113,7 @@ class ChatScreenState extends State<ChatScreen> {
     isShowSticker = false;
     imageUrl = '';
 
-    Firestore.instance.collection('users').document('${widget.currentId}')
+    Firestore.instance.collection('users').document('$currentId')
         .snapshots().listen(
             (data) {
           setState(() {
