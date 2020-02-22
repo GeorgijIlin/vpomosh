@@ -135,12 +135,10 @@ class _UserMessagesPageState extends State<UserMessagesPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    ChatRoomPage(
+                builder: (context) => ChatRoomPage(
                       peerId: document['userId'],
                       currentId: user.uid,
                       peerName: document['userName'],
-                      user: user,
                     ),
               ),
             );
