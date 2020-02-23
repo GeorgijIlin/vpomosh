@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vpomosh/pages/user/active_ad_detail_page.dart';
+import 'package:like_button/like_button.dart';
 
 class ActiveAdsPage extends StatefulWidget {
 
@@ -21,6 +22,8 @@ class _ActiveAdsPageState extends State<ActiveAdsPage> {
 
   final FirebaseUser user;
   _ActiveAdsPageState({this.user});
+
+  bool _isFavorited = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +81,15 @@ class _ActiveAdsPageState extends State<ActiveAdsPage> {
         } else {
           return new Scaffold(
             backgroundColor: Colors.white,
-            body: new ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) => _buildItem(context, ads[index]),
+            body: Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) => _buildItem(context, ads[index]),
+              ),
             ),
           );
         }
@@ -92,61 +99,110 @@ class _ActiveAdsPageState extends State<ActiveAdsPage> {
   }
 
   Widget _buildItem(BuildContext context, ad) {
-    return Column(
-      children: <Widget>[
-        Column(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ActiveAdDetailPage(
+              user: user,
+              ad: ad,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          verticalDirection: VerticalDirection.down,
           children: <Widget>[
-            ListTile(
-              leading: CachedNetworkImage(
-                imageUrl: '${ad['images'][0]}',
-                imageBuilder: (context, imageProvider) => CircleAvatar(
-                  backgroundImage: imageProvider,
+            Stack(
+              children: <Widget>[
+                CachedNetworkImage(
+                  imageUrl: '${ad['images'][0]}',
+                  imageBuilder: (context, imageProvider) => Center(
+                    child: Container(
+                      height: 120,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS ? Center(child: CupertinoActivityIndicator()) : Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Center(child: Icon(Icons.error),),
                 ),
-                placeholder: (context, url) => Theme.of(context).platform == TargetPlatform.iOS
-                    ? new CupertinoActivityIndicator()
-                    : new CircularProgressIndicator(),
-              ),
-              title: Text('${ad['adServiceName']}'),
-              subtitle: Text('${ad['adCategoryName']}'),
-              trailing: Text('${ad['price']} ₽'),
+                Positioned(
+                  right: 0.0,
+                  top: 0.0,
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: LikeButton(
+                      size: 30,
+                      circleColor: CircleColor(
+                        start: Colors.white, end: Colors.white,),
+                      bubblesColor: BubblesColor(
+                        dotPrimaryColor: Colors.white,
+                        dotSecondaryColor: Colors.white,
+                      ),
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: isLiked ? Colors.white : Colors.white,
+                          size: 30,
+                        );
+                      },
+                      onTap: onLikeButtonTapped,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: EdgeInsets.all(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Text(
+                    '${ad['adServiceName']}',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child:
+                    Text(
+                      '${ad['price']} ₽',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   Text(
                     DateFormat('dd MMM kk:mm','ru').format(DateTime.fromMillisecondsSinceEpoch(int.parse(ad['timestamp']))),
                     style: TextStyle(
-                      color: Colors.grey,
+                      fontSize: 12,
+                      color: Colors.black38,
                     ),
-                  ),
-                  FlatButton(
-                    child: Text(
-                      'Подробнее',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ActiveAdDetailPage(
-                            user: user,
-                            ad: ad,
-                          ),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),
             ),
           ],
         ),
-        Divider(),
-      ],
+      ),
     );
+  }
+
+  Future<bool> onLikeButtonTapped(bool isLiked) async{
+    /// send your request here
+    // final bool success= await sendRequest();
+
+    /// if failed, you can do nothing
+    // return success? !isLiked:isLiked;
+
+    return !isLiked;
   }
 }
