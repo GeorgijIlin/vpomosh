@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:vpomosh/pages/user/payment_page.dart';
 
 class ActiveAdDetailPage extends StatefulWidget {
 
@@ -17,11 +21,13 @@ class ActiveAdDetailPage extends StatefulWidget {
   );
 }
 
+
 class _ActiveAdDetailPageState extends State<ActiveAdDetailPage> {
 
   final FirebaseUser user;
   final DocumentSnapshot ad;
   _ActiveAdDetailPageState({this.user, this.ad});
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +104,19 @@ class _ActiveAdDetailPageState extends State<ActiveAdDetailPage> {
                 ),
               ),
               Divider(),
+              ListTile(
+                leading: Icon(Icons.payment,),
+                title: Text('Продвнуть в поиске'),
+                trailing: Icon(Icons.chevron_right,),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentPage(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         );
